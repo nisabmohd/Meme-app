@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMeme() {
+        loader.visibility = View.VISIBLE
+        memeImg.visibility = View.INVISIBLE
         val queue = Volley.newRequestQueue(this)
         val url = "https://meme-api.com/gimme"
         val stringRequest = JsonObjectRequest(
@@ -25,12 +27,17 @@ class MainActivity : AppCompatActivity() {
             { response ->
                 val img = response.getString("url")
                 Glide.with(this).load(img).into(memeImg)
+                loader.visibility = View.INVISIBLE
+                memeImg.visibility = View.VISIBLE
             },
             {
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
-            })
+                loader.visibility = View.INVISIBLE
+            }
+        )
         queue.add(stringRequest)
     }
+
     fun shareMeme(view: View) {}
     fun nextMeme(view: View) {
         getMeme()
