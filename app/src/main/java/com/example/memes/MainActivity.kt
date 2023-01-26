@@ -1,5 +1,9 @@
 package com.example.memes
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -11,6 +15,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    var image=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,6 +31,7 @@ class MainActivity : AppCompatActivity() {
             Request.Method.GET, url, null,
             { response ->
                 val img = response.getString("url")
+                image=img;
                 Glide.with(this).load(img).into(memeImg)
                 loader.visibility = View.INVISIBLE
                 memeImg.visibility = View.VISIBLE
@@ -38,7 +44,13 @@ class MainActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    fun shareMeme(view: View) {}
+    fun shareMeme(view: View) {
+        val shareIntent = Intent()
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.type="text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, image);
+        startActivity(Intent.createChooser(shareIntent,"Share Via"))
+    }
     fun nextMeme(view: View) {
         getMeme()
     }
